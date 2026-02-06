@@ -3,9 +3,9 @@ module type Kind = sig
 end
 
 module type Functor = sig
-  module Kind : Kind
+  include Kind
 
-  val map : ('a -> 'b) -> 'a Kind.t -> 'b Kind.t
+  val map : ('a -> 'b) -> 'a t -> 'b t
 end
 
 module type Mu = sig
@@ -43,6 +43,15 @@ module type Hylomorphism = sig
 
   val run : ('a Kind.t -> 'a) -> ('c -> 'c Kind.t) -> 'c -> 'a
 
-  module Catamorphism : Catamorphism with module Kind = Kind
-  module Anamorphism : Anamorphism with module Kind = Kind
+  module Catamorphism : sig
+    module Mu : Mu with module Kind = Kind
+
+    val run : ('a Kind.t -> 'a) -> _ Mu.t -> 'a
+  end
+
+  module Anamorphism : sig
+    module Nu : Nu with module Kind = Kind
+
+    val run : ('a -> 'a Kind.t) -> 'a -> _ Nu.t
+  end
 end
