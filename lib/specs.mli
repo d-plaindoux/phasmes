@@ -25,24 +25,24 @@ module type Nu = sig
 end
 
 module type Catamorphism = sig
-  module Functor : Functor
-  module Mu : Mu with module Kind = Functor.Kind
+  module Kind : Kind
+  module Mu : Mu with module Kind = Kind
 
-  val run : ('a Functor.Kind.t -> 'a) -> _ Mu.t -> 'a
+  val run : ('a Kind.t -> 'a) -> _ Mu.t -> 'a
 end
 
 module type Anamorphism = sig
-  module Functor : Functor
-  module Nu : Nu with module Kind = Functor.Kind
+  module Kind : Kind
+  module Nu : Nu with module Kind = Kind
 
-  val run : ('a -> 'a Functor.Kind.t) -> 'a -> _ Nu.t
+  val run : ('a -> 'a Kind.t) -> 'a -> _ Nu.t
 end
 
 module type Hylomorphism = sig
-  module Functor : Functor
+  module Kind : Kind
 
-  val run : ('a Functor.Kind.t -> 'a) -> ('c -> 'c Functor.Kind.t) -> 'c -> 'a
+  val run : ('a Kind.t -> 'a) -> ('c -> 'c Kind.t) -> 'c -> 'a
 
-  module Catamorphism : Catamorphism with module Functor = Functor
-  module Anamorphism : Anamorphism with module Functor = Functor
+  module Catamorphism : Catamorphism with module Kind = Kind
+  module Anamorphism : Anamorphism with module Kind = Kind
 end
